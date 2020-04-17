@@ -1,0 +1,50 @@
+--
+- name: Create an ECS instance
+  ali_instance:
+    alicloud_region: "{{ alicloud_region }}"
+    alicloud_zone: "{{ alicloud_zone }}"
+    image_id: "{{ hosts_conf.docker_node.image }}"
+    instance_type: "{{  hosts_conf.docker_node.type }}"
+    instance_name: "{{  hosts_conf.docker_node.instance_name }}"
+    description: "{{  hosts_conf.docker_node.description }}"
+    host_name: "{{  hosts_conf.docker_node.host_name }}"
+    state: 'present'
+    key_name: "{{ hosts_conf.docker_node.key_name }}"
+    vswitch_id: "{{vsw.vswitch.id}}"
+#    security_groups: "{{sg.id}}"
+    count: "{{hosts_conf.docker_node.count}}"
+    allocate_public_ip: "{ hosts_conf.docker_node.allocate_public_ip }}"
+    internet_charge_type: "{{ hosts_conf.docker_node.internet_charge_type }}"
+    max_bandwidth_in: "{{ hosts_conf.docker_node.max_bandwidth_in }}"
+    max_bandwidth_out: "{{ hosts_conf.docker_node.max_bandwidth_out }}"
+    instance_tags: "{{ hosts_conf.docker_node.instance_tags}}"
+  register: ecs
+
+- name: output information of the vm
+  debug: msg: "The created vm is {{ ecs }}."
+
+- name: start instance
+  alicloud_instance:
+    alicloud_access_key: '{{ alicloud_access_key }}'
+    alicloud_secret_key: '{{ alicloud_secret_key }}'
+    alicloud_region: '{{ alicloud_region }}'
+    instance_ids: '{{ ecs.instance_ids }}'
+    state: 'running'
+
+#- name: reboot instance forcibly
+#  ecs:
+#    alicloud_access_key: '{{ alicloud_access_key }}'
+#    alicloud_secret_key: '{{ alicloud_secret_key }}'
+#    alicloud_region: '{{ alicloud_region }}'
+#    instance_ids: '{{ instance_ids }}'
+#    state: 'restarted'
+#    force: '{{ force }}'
+
+- name: Add instances to an security group
+  ecs:
+    alicloud_access_key: '{{ alicloud_access_key }}'
+    alicloud_secret_key: '{{ alicloud_secret_key }}'
+    alicloud_region: '{{ alicloud_region }}'
+    instance_ids: '{{ ecs.instance_ids }}'
+    group_id: '{{ sg.id }}'
+    sg_action: '{{ hosts_conf.docker_node.sg_action }}'

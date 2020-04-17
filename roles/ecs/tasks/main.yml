@@ -1,0 +1,13 @@
+---
+# file: tasks/main.yml
+- name: Ensure vpc and security group and get any other pre condition ready
+  include: ecs-preinit.yml
+  tags: ["preinit"]
+
+- name: Create a ecs instance
+  include: ecs-create.yml
+  tags: ["create"]
+
+#- name: Confiugre the ecs instance created
+#- include: ecs-configure.yml
+#  tags: ["configure"]

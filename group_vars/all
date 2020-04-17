@@ -1,0 +1,60 @@
+alicloud_region: "cn-hangzhou"
+alicloud_zone: "cn-hangzhou-a"
+
+alicloud_access_key: "LTAI5aU8ATcDCgh1"
+alicloud_secret_key: "bk5EjMlSLhCDv5YK5RkxMrHUayQTJk"
+
+
+#vpc configure
+vpc_cidr_block: "192.168.0.0/16"
+vpc_name: "waldens-vpc"
+vpc_description: "Waldens vpc"
+
+#vswitch configure
+vswitch_cidr_block: "192.168.0.0/16"
+vswitch_name: "waldens-vswitch"
+vpc_description: "Waldens vswitch"
+
+#security group configure
+sgroups:
+  "docker-sg":
+    name: "dockers"
+    description: "group foir docker node"
+    inboundRules: 
+      - ip_protocol: tcp
+        port_range: 1/122
+        source_cidr_ip: '0.0.0.0/0'
+        priority: 10
+        policy: drop
+        nic_type: intranet
+    outboundRules:
+      - proto: all
+        port_range: 80/81
+        priority: 10
+        policy: accept
+        nic_type: intranet
+      - proto: all
+        port_range: 8080/8081
+        priority: 10
+        policy: accept
+        nic_type: intranet
+
+#image configure
+hosts_conf:
+  "docker_node":
+    image: "centos_7_06_64_20G_alibase_20190218.vhd"
+    type:  "ecs.t5-lc1m1.small"
+    instance_name: "docker-node1"
+    description: "docker node"
+    host_name: "node1"
+    password: "Walden"
+    key_name: "walden"
+    count: 1
+    allocate_public_ip: True
+    internet_charge_type: "PayByBandwidth"
+    max_bandwidth_in: 200
+    max_bandwidth_out: 10
+    sg_action: "join"
+    instance_tags:
+      - tag_key: "docker_node"
+        tag_value: '1'

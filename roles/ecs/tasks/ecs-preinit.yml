@@ -1,0 +1,27 @@
+---
+
+- name: Create a new AlibabaCloud VPC resource
+  alicloud_vpc:
+    alicloud_region: "{{ alicloud_region }}"
+    state: present
+    cidr_block: "{{ vpc_cidr_block }}"
+    vpc_name: "{{ vpc_name }}"
+    description: "{{ vpc_description }}"
+  when: not vpcs.vpcs
+  register: vpc
+- debug: var=vpc
+
+- name: create vswitch
+  alicloud_vswitch:
+    alicloud_region: "{{ alicloud_region }}"
+    cidr_block: "{{ vswitch_cidr_blok }}"
+    name: "{{ vswitch_name }}"
+    description: "{{ vswitch_description }}"
+    vpc_id: "{{ vpc.vpc_id }}"
+    state: present
+  register: vsw
+- debug: var=vsw
+
+- name: Create a security group
+  ali_security_group:
+     alicloud_region: "{{ alicloud_region }}"

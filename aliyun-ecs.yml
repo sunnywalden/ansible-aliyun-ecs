@@ -1,0 +1,26 @@
+# example
+# # ecs instance inital
+- name: ecs instance configure
+  hosts: localhost
+  #remote_user: root
+  #gather_facts: true
+  connection: local
+  roles:
+    - ecs
+
+- name: instanll docker in ecs
+  hosts: localhost
+  #remote_user: root
+  #gather_facts: true
+  connection: local
+  roles:
+    - docker
+
+- name: run a nginx container 
+  hosts: localhost
+  #remote_user: root
+  #gather_facts: true
+  connection: local
+  roles:
+    - container
+
